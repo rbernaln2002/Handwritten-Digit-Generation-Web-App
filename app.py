@@ -1,7 +1,6 @@
 import streamlit as st
 import torch
 import torch.nn as nn
-import torchvision.transforms as transforms
 import numpy as np
 
 # --- CONFIGURACIÓN ---
@@ -42,8 +41,10 @@ generator = load_generator()
 
 # --- STREAMLIT UI ---
 st.title("🧠 Handwritten Digit Generator")
+st.write("Select a digit (0–9) and generate 5 different handwritten-style images using a trained GAN.")
 
-digit = st.selectbox("Select a digit to generate (0–9):", list(range(10)))
+digit = st.selectbox("Select a digit to generate:", list(range(10)))
+
 if st.button("Generate 5 Images"):
     noise = torch.randn(5, z_dim).to(device)
     labels = torch.full((5,), digit, dtype=torch.long).to(device)
@@ -54,5 +55,5 @@ if st.button("Generate 5 Images"):
     st.subheader(f"Generated Images for Digit: {digit}")
     cols = st.columns(5)
     for i in range(5):
-        img = (generated[i].numpy() + 1) / 2  # De [-1,1] a [0,1]
+        img = (generated[i].numpy() + 1) / 2  # Convert from [-1, 1] to [0, 1]
         cols[i].image(img, width=100, clamp=True, caption=f"Image {i+1}")
